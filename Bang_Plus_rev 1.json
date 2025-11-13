@@ -1,0 +1,195 @@
+{
+    // -------------------------------------------------------------------
+    //
+    // Unit identification
+    //
+    id: {
+        unitNum: 1,
+        unitName: "Bang+",
+        ledWizUnitNum: 1,
+    },
+
+    // -------------------------------------------------------------------
+    //
+    // Serial ports and logging
+    //
+
+    // Enable logging and command console on USB virtual COM port
+    serialPorts: {
+        usb: {
+            logging: true,       // enable logging on this port
+            console: {
+                enable: true,    // enable the interactive command line on this port
+                bufSize: 2048,   // buffer size for console output
+            },
+        },
+    },
+
+    // logging filters
+    logging: {
+        filter: "error warning info config",
+        bufSize: 8192,
+        timestamps: true,
+        typeCodes: true,
+        colors: true,
+    },
+
+    // -------------------------------------------------------------------
+    //
+    // Virtual USB input devices
+    // 
+
+    // enable virtual keyboard input
+    keyboard: {
+        enable: true,
+    },
+
+    // enable virtual gamepad input, with typical Visual Pinball axis mappings
+    gamepad: {
+        enable: true,       // enable the gamepad emulation
+        x: "nudge.x",       // connect the accelerometer X axis to the joystick X axis
+        y: "nudge.y",       // ditto for the Y axis
+        z: "plunger.z",     // connect the plunger position reading to the joystick Z axis
+    },
+
+    // XBox controller emulation, if desired - this is usually either/or with the gamepad,
+    // but it's also okay to enable both, as long as it doesn't create any conflicts for
+    // any games
+    // xInput: {
+    //     enable: true,
+    //     xRight: "nudge.x",      // connect accelerometer X axis to the XBox right X axis
+    //     yRight: "nudge.y",      // connect accelerometer Y to the XBox right Y axis
+    // },
+
+    // Open Pinball Device HID
+    openPinballDevice: {
+        enable: true,
+    },
+
+    // -------------------------------------------------------------------
+    //
+    // Buttons (action assignments are just examples; change as desired)
+    //
+    buttons: [
+        // IN-1
+        { 
+            source: { type: "gpio", gp: 0}, // button is wired to GPIO port GP0
+            action: { type: "key", key: "left shift" }, // VP left flipper
+	},
+
+        // IN-2
+        { 
+            source: { type: "gpio", gp: 1}, 
+            action: { type: "key", key: "right shift" }, // VP right flipper
+        },
+
+        // IN-3
+        { 
+            source: { type: "gpio", gp: 2}, 
+            action: { type: "key", key: "left ctrl" }, // VP left magnasave
+        },
+
+        // IN-4
+        { 
+            source: { type: "gpio", gp: 3}, 
+            action: { type: "key", key: "right ctrl" }, // VP right magnasave
+        },
+
+        // IN-5
+        { 
+            source: { type: "gpio", gp: 6}, 
+            action: { type: "key", key: "1" }, // VP Start
+        },
+
+        // IN-6
+        { 
+            source: { type: "gpio", gp: 7}, 
+            action: { type: "key", key: "esc" }, // VP quit/exit
+        },
+
+        // IN-7
+        { 
+            source: { type: "gpio", gp: 8},
+            action: { type: "key", key: "2" },  // VP extra ball
+        },
+
+        // IN-8
+        { 
+            source: { type: "gpio", gp: 9}, 
+            action: { type: "key", key: "3" },  // VP Coin 1
+        },
+
+        // IN-9
+        { 
+            source: { type: "gpio", gp: 10}, 
+            action: { type: "key", key: "4" }, // VP Coin 2
+        },
+
+        // IN-10
+        { 
+            source: { type: "gpio", gp: 11},
+            action: { type: "key", key: "5" }, // VP Coin 3
+        },
+
+        // IN-11
+        { 
+            source: { type: "gpio", gp: 12}, 
+            action: { type: "key", key: "end" }, // VP Coin door switch
+        },
+    ],
+    // -------------------------------------------------------------------
+    //
+    // Output Ports - these correspond to DOF output ports, in order
+    // starting at #1
+    //
+    outputs: [
+        { device: { type: "gpio", gp: 13, pwm: true }, },  // DOF output #1 -> Out_0
+        { device: { type: "gpio", gp: 14, pwm: true }, },  // DOF output #2 -> Out_1
+        { device: { type: "gpio", gp: 15, pwm: true }, },  // DOF output #3 -> Out_2
+        { device: { type: "gpio", gp: 16, pwm: true }, },  // DOF output #4 -> Out_3
+        { device: { type: "gpio", gp: 17, pwm: true }, },  // DOF output #5 -> Out_4
+        { device: { type: "gpio", gp: 18, pwm: true }, },  // DOF output #6 -> Out_5
+        { device: { type: "gpio", gp: 19, pwm: true }, },  // DOF output #7 -> Out_6
+        { device: { type: "gpio", gp: 20, pwm: true }, },  // DOF output #8 -> Out_7
+        { device: { type: "gpio", gp: 21, pwm: true }, },  // DOF output #8 -> Out_8
+        { device: { type: "gpio", gp: 22, pwm: true }, },  // DOF output #8 -> Out_9
+        { device: { type: "gpio", gp: 26, pwm: true }, },  // DOF output #8 -> Out_10
+        { device: { type: "gpio", gp: 27, pwm: true }, },  // DOF output #8 -> Out_11
+    ],
+   // default PWM frequency for Pico GPIO outputs
+    pwm: {
+        defaultFreq: 20000,
+    },
+
+    // -------------------------------------------------------------------
+    //
+    // Nudge device
+    //
+    nudge: {
+        source: "lis3dh",
+        x: "+X",
+        y: "+Y",
+        z: "+Z",
+    },
+
+    lis3dh: {
+        i2c: 0,            // I2C bus - 0 for I2C0, 1 for I2C1
+        addr: 0x19,        // I2C address: 0x1E if SDO/SA0 is wired to GND, 0x1D if 3.3V or floating
+        gRange: 2,         // dynamic range +/- 2g
+    },
+    i2c0: {
+         sda: 4,           // GPIO port of I2C0 SDA (serial data) connection
+         scl: 5,           // GPIO port of I2C0 SCL (serial clock) connection
+         speed: 400000,    // bus speed, bits per second
+    },
+
+     plunger: {
+         source: "pico_adc",   // source sensor type; usually inferred automatically from available sensors
+         autoZero: true,       // enable auto-zeroing; only applies to quadrature sensors, ignored otherwise
+         autoZeroTime: 5000,   // time in milliseconds for auto-zeroing; plunger must be stationary this long to auto-zero
+    //     powerLaw: 2,          // power-law exponent in brightness-to-distance calculation, only for VCNL4010
+          },
+ pico_adc: {
+         gpio: 28,
+           },
+}	   
